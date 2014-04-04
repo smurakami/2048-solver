@@ -1,9 +1,15 @@
+
+var Map = function(){
+  for (var i = 0; i < 4; i++) {
+    this[i] = [0, 0, 0, 0];
+  }
+};
+
+Map.prototype = new Array();
+
 var getTileMap = function () {
   // Initialize
-  var map = Array(4);
-  for (var i = 0; i < 4; i++) {
-    map[i] = [0, 0, 0, 0];
-  }
+  var map = new Map();
   // Get tiles from DOM tree
   var tiles = [];
   var tileContainer = document.querySelector('.tile-container');
