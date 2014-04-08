@@ -25,35 +25,48 @@ Solver.prototype.stop = function(){
 };
 
 Solver.prototype.update = function () {
+  var self = this;
   var prevMap = Map.read();
+  prevMap.setOld();
+  var predicatedMap = prevMap.clone();
 
   var dir = Math.floor(Math.random() * 4);
   switch (dir) {
     case 0:
       this.controller.up();
-      prevMap.moveup();
+      predicatedMap.moveup();
       break;
     case 1:
       this.controller.down();
-      prevMap.movedown();
+      predicatedMap.movedown();
       break;
     case 2:
       this.controller.left();
-      prevMap.moveleft();
+      predicatedMap.moveleft();
       break;
     case 3:
       this.controller.right();
-      prevMap.moveright();
+      predicatedMap.moveright();
       break;
     default: break;
   }
 
-  var currentMap = Map.read();
-  currentMap.removeNewTile();
+  setTimeout(function(){
+    var currentMap = Map.read();
+    // currentMap.print();
+    currentMap.removeNewTile();
 
-  if (!prevMap.eq(currentMap)){
-    console.log("map error!");
-  }
+    if (!predicatedMap.eq(currentMap)){
+      console.log("map error!");
+      console.log("prev: ");
+      prevMap.print();
+      console.log("predicated:")
+      predicatedMap.print();
+      console.log("current: ");
+      currentMap.print();
+      self.stop();
+    }
+  }, 50);
 
   this.counter++;
 };

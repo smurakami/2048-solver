@@ -16,7 +16,7 @@ Map.prototype = new Array();
 Map.prototype.clone = function () {
   var _map = new Map();
   for (var i = 0, len = this.tiles.length; i < len; i++){
-    var tile = this.tiles[i].clone;
+    var tile = this.tiles[i].clone();
     _map.tiles.push(tile);
     _map[tile.y][tile.x] = tile;
   }
@@ -78,7 +78,7 @@ Map.prototype.move = function (dir_x, dir_y) {
       } else {
         tile.x = current_x;
         tile.y = current_y;
-        this[current_x][current_y] = tile;
+        this[current_y][current_x] = tile;
       }
     }
   }
@@ -96,6 +96,7 @@ var MapTile = function(map){
 
 MapTile.prototype.clone = function() {
   _tile = new MapTile(this);
+  _tile.num = this.num;
   _tile.x = this.x;
   _tile.y = this.y;
   _tile.merged = this.merged;
@@ -144,7 +145,7 @@ Map.read = function () {
 
 Map.prototype.print = function() {
   for (var i = 0; i < 4; i++){
-    s = "";
+    var s = "";
     for (var j = 0; j < 4; j++){
       var tile = this[i][j];
       if (tile) {
@@ -179,6 +180,13 @@ Map.prototype.eq = function (map) {
   //   if (tile)
   // }
   return true;
+};
+
+Map.prototype.setOld = function() {
+  for (var i = 0, len = this.tiles.length; i < len; i++){
+    var tile = this.tiles[i];
+    tile.isNew = false;
+  }
 };
 
 Map.prototype.removeNewTile = function(){
@@ -264,35 +272,48 @@ Solver.prototype.stop = function(){
 };
 
 Solver.prototype.update = function () {
+  var self = this;
   var prevMap = Map.read();
+  prevMap.setOld();
+  var predicatedMap = prevMap.clone();
 
   var dir = Math.floor(Math.random() * 4);
   switch (dir) {
     case 0:
       this.controller.up();
-      prevMap.moveup();
+      predicatedMap.moveup();
       break;
     case 1:
       this.controller.down();
-      prevMap.movedown();
+      predicatedMap.movedown();
       break;
     case 2:
       this.controller.left();
-      prevMap.moveleft();
+      predicatedMap.moveleft();
       break;
     case 3:
       this.controller.right();
-      prevMap.moveright();
+      predicatedMap.moveright();
       break;
     default: break;
   }
 
-  var currentMap = Map.read();
-  currentMap.removeNewTile();
+  setTimeout(function(){
+    var currentMap = Map.read();
+    // currentMap.print();
+    currentMap.removeNewTile();
 
-  if (!prevMap.eq(currentMap)){
-    console.log("map error!");
-  }
+    if (!predicatedMap.eq(currentMap)){
+      console.log("map error!");
+      console.log("prev: ");
+      prevMap.print();
+      console.log("predicated:")
+      predicatedMap.print();
+      console.log("current: ");
+      currentMap.print();
+      self.stop();
+    }
+  }, 50);
 
   this.counter++;
 };

@@ -16,7 +16,7 @@ Map.prototype = new Array();
 Map.prototype.clone = function () {
   var _map = new Map();
   for (var i = 0, len = this.tiles.length; i < len; i++){
-    var tile = this.tiles[i].clone;
+    var tile = this.tiles[i].clone();
     _map.tiles.push(tile);
     _map[tile.y][tile.x] = tile;
   }
@@ -78,7 +78,7 @@ Map.prototype.move = function (dir_x, dir_y) {
       } else {
         tile.x = current_x;
         tile.y = current_y;
-        this[current_x][current_y] = tile;
+        this[current_y][current_x] = tile;
       }
     }
   }
@@ -96,6 +96,7 @@ var MapTile = function(map){
 
 MapTile.prototype.clone = function() {
   _tile = new MapTile(this);
+  _tile.num = this.num;
   _tile.x = this.x;
   _tile.y = this.y;
   _tile.merged = this.merged;
@@ -144,7 +145,7 @@ Map.read = function () {
 
 Map.prototype.print = function() {
   for (var i = 0; i < 4; i++){
-    s = "";
+    var s = "";
     for (var j = 0; j < 4; j++){
       var tile = this[i][j];
       if (tile) {
@@ -179,6 +180,13 @@ Map.prototype.eq = function (map) {
   //   if (tile)
   // }
   return true;
+};
+
+Map.prototype.setOld = function() {
+  for (var i = 0, len = this.tiles.length; i < len; i++){
+    var tile = this.tiles[i];
+    tile.isNew = false;
+  }
 };
 
 Map.prototype.removeNewTile = function(){
