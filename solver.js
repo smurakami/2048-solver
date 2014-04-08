@@ -6,6 +6,7 @@ var Solver = function () {
   this.counter = 0;
   this.toStop = true;
   this.controller = new Controller();
+  this.interval = 100;
 };
 
 Solver.prototype.start = function() {
@@ -14,13 +15,14 @@ Solver.prototype.start = function() {
   var loop = function () {
     self.update();
     if (self.toStop) return;
-    setTimeout(loop, 500);
+    setTimeout(loop, self.interval);
   };
   loop();
 };
 
 Solver.prototype.update = function () {
-  switch (this.counter % 4) {
+  var dir = Math.floor(Math.random() * 4);
+  switch (dir) {
     case 0:
       this.controller.up();
       break;

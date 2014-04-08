@@ -5,20 +5,66 @@
 var Map = function(){
   var SIZE = 4;
   for (var i = 0; i < SIZE; i++) {
-    this[i] = [0, 0, 0, 0];
+    this[i] = [null, null, null, null];
   }
+  this.tiles = [];
 };
 
 Map.prototype = new Array();
+
+Map.prototype.clone = function () {
+  var _map = new Map();
+  for (var i = 0, len = this.tiles.length; i < len; i++){
+    var tile = this.tiles[i].clone;
+    _map.tiles.push(tile);
+    _map[tile.y][tile.x] = tile;
+  }
+  return _map;
+};
+
+Map.prototype.moveup = function(){
+
+}
+
+Map.prototype.move = function (dir_x, dir_y) {
+  if (dir_x != 0) {
+    if (dir_x > 0) {
+
+    } else {
+
+    }
+  } else {
+    if (dir_y > 0){
+
+    } else if (dir_y < 0) {
+
+    } else {
+      console.log("Map.prototype.move: invalid direction")
+    }
+  }
+
+
+};
+
+var MapTile = function(){
+};
+
+MapTile.prototype.clone = function() {
+  _tile = new MapTile();
+  _tile.x = this.x;
+  _tile.y = this.y;
+  _tile.merged = this.merged;
+  _tile.isNew = this.isNew;
+  return _tile;
+};
 
 var readMap = function () {
   // Initialize
   var map = new Map();
   // Get tiles from DOM tree
-  var tiles = [];
   var tileContainer = document.querySelector('.tile-container');
   for (var i = 0, l = tileContainer.childNodes.length; i < l; i++){
-    var tile = {};
+    var tile = new MapTile();
     var tileDom = tileContainer.childNodes[i];
     var classes = tileDom.className.split(" ");
     tile.num = Number(classes[1].slice(5));
@@ -26,25 +72,26 @@ var readMap = function () {
     tile.x = a_pos[0] - 1;
     tile.y = a_pos[1] - 1;
     tile.merged = classes.length >= 4 && classes[3] == "tile-merged";
-    tiles.push(tile);
+    tile.isNew  = classes.length >= 4 && classes[3] == "tile-new";
+    map.tiles.push(tile);
   }
   // filter merged tiles
-  for (var i = 0; i < tiles.length; i++){
-    var tile = tiles[i];
+  for (var i = 0; i < map.tiles.length; i++){
+    var tile = map.tiles[i];
     if (tile.merged) {
-      for (var j = 0; j < tiles.length; j++){
-        tile_ = tiles[j];
+      for (var j = 0; j < map.tiles.length; j++){
+        tile_ = map.tiles[j];
         if (tile.x == tile_.x && tile.y == tile_.y && !tile_.merged){
-          tiles.splice(j, 1);
+          map.tiles.splice(j, 1);
           j--;
         }
       }
     }
   }
   // Put tiles on the map
-  for (var i = 0, l = tiles.length; i < l; i++){
-    var tile = tiles[i];
-    map[tile.y][tile.x] = tile.num;
+  for (var i = 0, l = map.tiles.length; i < l; i++){
+    var tile = map.tiles[i];
+    map[tile.y][tile.x] = tile;
   }
 
   return map;
@@ -54,7 +101,15 @@ var printMap = function(map) {
   for (var i = 0; i < 4; i++){
     s = ""
     for (var j = 0; j < 4; j++){
-      s += map[i][j] + ", "
+      var tile = map[i][j];
+      if (tile) {
+        s += tile.num;
+        if (map[i][j].isNew) s += "new"
+        else s += "   "
+      } else {
+        s += "0   "
+      }
+      s += ", ";
     }
     console.log(s);
   }
