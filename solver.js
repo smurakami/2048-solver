@@ -21,6 +21,8 @@ Solver.prototype.start = function() {
 };
 
 Solver.prototype.update = function () {
+  var prevMap = Map.read();
+
   var dir = Math.floor(Math.random() * 4);
   switch (dir) {
     case 0:
@@ -37,6 +39,13 @@ Solver.prototype.update = function () {
       break;
     default: break;
   }
+
+  var currentMap = Map.read();
+
+  if (!prevMap.eq(currentMap)){
+    console.log("map error!");
+  }
+
   this.counter++;
 };
 

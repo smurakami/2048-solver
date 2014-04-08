@@ -70,6 +70,7 @@ Map.prototype.move = function (dir_x, dir_y) {
     }
     // move
     if (current_x != tile.x || current_y != tile.y) {
+      moved = true;
       this[tile.y][tile.x] = null;
       if (toRemove) {
         this.tiles.splice(i, 1);
@@ -81,6 +82,7 @@ Map.prototype.move = function (dir_x, dir_y) {
       }
     }
   }
+  return moved;
 };
 
 Map.prototype.inRange = function(x, y){
@@ -142,7 +144,7 @@ Map.read = function () {
 
 Map.prototype.print = function() {
   for (var i = 0; i < 4; i++){
-    s = ""
+    s = "";
     for (var j = 0; j < 4; j++){
       var tile = this[i][j];
       if (tile) {
@@ -156,5 +158,26 @@ Map.prototype.print = function() {
     }
     console.log(s);
   }
+};
+
+Map.prototype.eq = function (map) {
+  var size = this.size;
+  for (var i = 0; i < size; i++){
+    for (var j = 0; j < size; j++){
+      _tile = this[i][j];
+      tile = map[i][j];
+      if (tile == null || _tile == null){
+        if (tile != _tile) return false;
+        else continue;
+      }
+      if (tile.num != _tile.num) return false;
+    }
+  }
+  // for (var i = 0, len = this.tiles; i < len; i++){
+  //   tile = this.tiles[i];
+  //   _tile = map.tiles[i];
+  //   if (tile)
+  // }
+
 };
 
