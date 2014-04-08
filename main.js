@@ -8,6 +8,7 @@ var Map = function(){
     this[i] = [null, null, null, null];
   }
   this.tiles = [];
+  this.size = SIZE;
 };
 
 Map.prototype = new Array();
@@ -22,28 +23,37 @@ Map.prototype.clone = function () {
   return _map;
 };
 
-Map.prototype.moveup = function(){
-
-}
+Map.prototype.moveup = function(){ map.prototype.move(0, -1); }
+Map.prototype.movedown = function(){ map.prototype.move(0, 1); }
+Map.prototype.moveleft = function(){ map.prototype.move(-1, 0); }
+Map.prototype.moveright = function(){ map.prototype.move(1, 0); }
 
 Map.prototype.move = function (dir_x, dir_y) {
   if (dir_x != 0) {
     if (dir_x > 0) {
-
+      this.tiles.sort(function(a, b){ return b.x - a.x; });
     } else {
-
+      this.tiles.sort(function(a, b){ return a.x - b.x; });
     }
   } else {
     if (dir_y > 0){
-
+      this.tiles.sort(function(a, b){ return b.y - a.y; });
     } else if (dir_y < 0) {
-
+      this.tiles.sort(function(a, b){ return a.y - b.y; });
     } else {
       console.log("Map.prototype.move: invalid direction")
     }
   }
 
+  for (var i = 0; i < this.tiles.length; i++){
+    var tile = this.tiles[i];
 
+  }
+};
+
+Map.prototype.inRange = function(x, y){
+  var size = this.size;
+  return (x >= 0 && x < size && y >= 0 && y < size);
 };
 
 var MapTile = function(){
