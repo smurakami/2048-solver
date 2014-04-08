@@ -20,6 +20,10 @@ Solver.prototype.start = function() {
   loop();
 };
 
+Solver.prototype.stop = function(){
+  this.toStop = true;
+};
+
 Solver.prototype.update = function () {
   var prevMap = Map.read();
 
@@ -27,20 +31,25 @@ Solver.prototype.update = function () {
   switch (dir) {
     case 0:
       this.controller.up();
+      prevMap.moveup();
       break;
     case 1:
       this.controller.down();
+      prevMap.movedown();
       break;
     case 2:
       this.controller.left();
+      prevMap.moveleft();
       break;
     case 3:
       this.controller.right();
+      prevMap.moveright();
       break;
     default: break;
   }
 
   var currentMap = Map.read();
+  currentMap.removeNewTile();
 
   if (!prevMap.eq(currentMap)){
     console.log("map error!");

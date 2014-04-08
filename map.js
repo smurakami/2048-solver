@@ -178,6 +178,17 @@ Map.prototype.eq = function (map) {
   //   _tile = map.tiles[i];
   //   if (tile)
   // }
+  return true;
+};
 
+Map.prototype.removeNewTile = function(){
+  for (var i = 0; i < this.tiles.length; i++){
+    var tile = this.tiles[i];
+    if (tile.isNew){
+      this[tile.y][tile.x] = null;
+      this.tiles.splice(i, 1);
+      i--;
+    }
+  }
 };
 
