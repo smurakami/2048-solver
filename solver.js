@@ -1,3 +1,7 @@
+/* ============================= *
+ * solver.js
+ * ============================= */
+
 var Solver = function () {
   this.counter = 0;
   this.toStop = true;

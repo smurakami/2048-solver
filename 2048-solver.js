@@ -1,21 +1,19 @@
 /* ============================= *
- * readmap.js
+ * map.js
  * ============================= */
 
-var Map = function() {
+var Map = function(){
+  var SIZE = 4;
+  for (var i = 0; i < SIZE; i++) {
+    this[i] = [0, 0, 0, 0];
+  }
+};
 
-}
+Map.prototype = new Array();
 
 var readMap = function () {
   // Initialize
-  var MAP_SIZE = 4;
-  var map = new Array(MAP_SIZE);
-  for (var i = 0; i < MAP_SIZE; i++) {
-    map[i] = Array(4);
-    for (var j = 0; j < MAP_SIZE; j++){
-      map[i][j] = 0;
-    }
-  }
+  var map = new Map();
   // Get tiles from DOM tree
   var tiles = [];
   var tileContainer = document.querySelector('.tile-container');
@@ -61,7 +59,6 @@ var printMap = function(map) {
     console.log(s);
   }
 };
-
 
 /* ============================= *
  * controller.js
@@ -131,7 +128,8 @@ Solver.prototype.start = function() {
 };
 
 Solver.prototype.update = function () {
-  switch (this.counter % 4) {
+  var direction = Math.floor(Math.random() * 4);
+  switch (direction) {
     case 0:
       this.controller.up();
       break;
