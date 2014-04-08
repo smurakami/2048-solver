@@ -6,7 +6,7 @@ var Solver = function () {
   this.counter = 0;
   this.toStop = true;
   this.controller = new Controller();
-  this.interval = 100;
+  this.interval = 500;
 };
 
 Solver.prototype.start = function() {

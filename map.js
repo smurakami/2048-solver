@@ -61,8 +61,9 @@ Map.prototype.move = function (dir_x, dir_y) {
       next_y += dir_y;
     }
     // merge
-    if (this.inRange(next_x, next_y) && this[next_y][next_x].num == tile.num){
+    if (this.inRange(next_x, next_y) && this[next_y][next_x].num == tile.num && !(this[next_y][next_x].merged)){
       this[next_y][next_x].num += tile.num;
+      this[next_y][next_x].merged = true;
       current_x = next_x;
       current_y = next_y;
       toRemove = true;
@@ -186,6 +187,7 @@ Map.prototype.setOld = function() {
   for (var i = 0, len = this.tiles.length; i < len; i++){
     var tile = this.tiles[i];
     tile.isNew = false;
+    tile.merged = false;
   }
 };
 
