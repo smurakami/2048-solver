@@ -1,5 +1,5 @@
-var controller = {};
-controller.keydown = function(k) {
+var Controller = function(){};
+Controller.prototype.keydown = function(k) {
   var body = document.querySelector('body');
   var oEvent = document.createEvent('KeyboardEvent');
   // Chromium Hack
@@ -24,20 +24,18 @@ controller.keydown = function(k) {
   if (oEvent.keyCode !== k) {
       alert("keyCode mismatch " + oEvent.keyCode + "(" + oEvent.which + ")");
   }
-  console.log(oEvent);
   body.dispatchEvent(oEvent);
 }
 
-controller.up = function(){
+Controller.prototype.up = function(){
   this.keydown(38);
 };
-controller.right = function(){
+Controller.prototype.right = function(){
   this.keydown(39);
 };
-controller.down = function(){
+Controller.prototype.down = function(){
   this.keydown(40);
 }
-controller.left = function(){
+Controller.prototype.left = function(){
   this.keydown(37);
-
 };
