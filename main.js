@@ -274,7 +274,7 @@ Controller.prototype.left = function(){
   this.keydown(37);
 };
 var MinMax = function(){
-  this.maxDepth = 6;
+  this.maxDepth = 8;
   this.depth = 0;
 };
 

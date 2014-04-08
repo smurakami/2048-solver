@@ -1,5 +1,5 @@
 var MinMax = function(){
-  this.maxDepth = 12;
+  this.maxDepth = 8;
   this.depth = 0;
 };
 
