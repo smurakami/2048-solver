@@ -23,10 +23,10 @@ Map.prototype.clone = function () {
   return _map;
 };
 
-Map.prototype.moveup = function(){ map.prototype.move(0, -1); }
-Map.prototype.movedown = function(){ map.prototype.move(0, 1); }
-Map.prototype.moveleft = function(){ map.prototype.move(-1, 0); }
-Map.prototype.moveright = function(){ map.prototype.move(1, 0); }
+Map.prototype.moveup = function(){ this.move(0, -1); }
+Map.prototype.movedown = function(){ this.move(0, 1); }
+Map.prototype.moveleft = function(){ this.move(-1, 0); }
+Map.prototype.moveright = function(){ this.move(1, 0); }
 
 Map.prototype.move = function (dir_x, dir_y) {
   if (dir_x != 0) {
@@ -45,9 +45,41 @@ Map.prototype.move = function (dir_x, dir_y) {
     }
   }
 
+  var moved = false;
+
   for (var i = 0; i < this.tiles.length; i++){
     var tile = this.tiles[i];
-
+    var next_x = tile.x + dir_x;
+    var next_y = tile.y + dir_y;
+    var current_x = tile.x;
+    var current_y = tile.y;
+    var toRemove = false;
+    while (this.inRange(next_x, next_y) && this[next_y][next_x] == null){
+      current_x = next_x;
+      current_y = next_y;
+      next_x += dir_x;
+      next_y += dir_y;
+    }
+    // merge
+    if (this.inRange(next_x, next_y) && this[next_y][next_x].num == tile.num){
+      this[next_y][next_x].num += tile.num;
+      current_x = next_x;
+      current_y = next_y;
+      toRemove = true;
+      // i--;
+    }
+    // move
+    if (current_x != tile.x || current_y != tile.y) {
+      this[tile.y][tile.x] = null;
+      if (toRemove) {
+        this.tiles.splice(i, 1);
+        i--;
+      } else {
+        tile.x = current_x;
+        tile.y = current_y;
+        this[current_x][current_y] = tile;
+      }
+    }
   }
 };
 
@@ -56,11 +88,12 @@ Map.prototype.inRange = function(x, y){
   return (x >= 0 && x < size && y >= 0 && y < size);
 };
 
-var MapTile = function(){
+var MapTile = function(map){
+  this.map = map;
 };
 
 MapTile.prototype.clone = function() {
-  _tile = new MapTile();
+  _tile = new MapTile(this);
   _tile.x = this.x;
   _tile.y = this.y;
   _tile.merged = this.merged;
@@ -74,7 +107,7 @@ Map.read = function () {
   // Get tiles from DOM tree
   var tileContainer = document.querySelector('.tile-container');
   for (var i = 0, l = tileContainer.childNodes.length; i < l; i++){
-    var tile = new MapTile();
+    var tile = new MapTile(this);
     var tileDom = tileContainer.childNodes[i];
     var classes = tileDom.className.split(" ");
     tile.num = Number(classes[1].slice(5));
@@ -124,3 +157,4 @@ Map.prototype.print = function() {
     console.log(s);
   }
 };
+
