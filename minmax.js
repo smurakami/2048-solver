@@ -39,20 +39,29 @@ MinMax.prototype.turnPut = function (map, alpha, beta) {
   this.depth++;
   var size = map.size;
   // var beta = map.maxValue();
+  var poslist = [];
   for (var i = 0; i < size; i++){
     for (var j = 0; j < size; j++){
       if (map[i][j] == null){
-        var _map = map.clone();
-        _map.putTile(j, i);
-        var val = this.turnMove(_map);
-        if (val < beta) {
-          beta = val;
-        }
-        if (beta <= alpha){
-          return alpha;
-        }
+        poslist.push({x: j, y: i});
       }
     }
+  }
+
+  var len = poslist.length;
+  var dice = Math.floor(Math.random() * len);
+
+  var pos = poslist[dice];
+
+  var _map = map.clone();
+  _map.putTile(pos.y, pos.x);
+  var val = this.turnMove(_map);
+  if (val < beta) {
+    beta = val;
+  }
+
+  if (beta <= alpha){
+    return alpha;
   }
   this.depth--;
   return beta;
