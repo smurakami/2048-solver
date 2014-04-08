@@ -57,3 +57,51 @@ var printMap = function(map) {
     console.log(s);
   }
 };
+
+
+// var keydown = function() {
+//   var body = document.querySelector('body');
+//   fireMyKeyEvent(body, 'keydown', 38, false);
+// };
+
+// var fireMyKeyEvent = function( elem, type, key_code, with_shift ){
+//   // IE
+//   if( document.createEventObject ) {
+//     var f_event = document.createEventObject();
+//     f_event.keyCode = key_code;
+//     f_event.shiftKey = with_shift;
+//     elem.fireEvent( "on"+type, f_event );
+//   // IE 以外
+//   } else {
+//     f_event = document.createEvent("KeyboardEvent");
+//     f_event.initEvent(type,true,true);
+//     f_event.keyCode = key_code;
+//     f_event.shiftKey = with_shift;
+//     console.log(f_event);
+//     elem.dispatchEvent( f_event );
+//   }
+// };
+
+Podium = {};
+Podium.keydown = function(k) {
+  var body = document.querySelector('body');
+  var oEvent = document.createEvent('KeyboardEvent');
+  // Chromium Hack
+  Object.defineProperty(oEvent, 'keyCode', {
+              get : function() {return this.keyCodeVal; }
+  });
+  Object.defineProperty(oEvent, 'which', {
+              get : function() {return this.keyCodeVal; }
+  });
+  if (oEvent.initKeyboardEvent) {
+      oEvent.initKeyboardEvent("keydown", true, true, document.defaultView, false, false, false, false, k, k);
+  } else {
+      oEvent.initKeyEvent("keydown", true, true, document.defaultView, false, false, false, false, k, 0);
+  }
+  oEvent.keyCodeVal = k;
+  if (oEvent.keyCode !== k) {
+      alert("keyCode mismatch " + oEvent.keyCode + "(" + oEvent.which + ")");
+  }
+  console.log(oEvent);
+  body.dispatchEvent(oEvent);
+}
