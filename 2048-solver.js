@@ -1,11 +1,10 @@
 /* ============================= *
- * solver.js
- * ============================= */
-
-
-/* ============================= *
  * readmap.js
  * ============================= */
+
+var Map = function() {
+
+}
 
 var readMap = function () {
   // Initialize
@@ -109,3 +108,47 @@ Controller.prototype.down = function(){
 Controller.prototype.left = function(){
   this.keydown(37);
 };
+
+/* ============================= *
+ * solver.js
+ * ============================= */
+var Solver = function () {
+  this.counter = 0;
+  this.toStop = true;
+  this.controller = new Controller();
+};
+
+Solver.prototype.start = function() {
+  var INTERVAL = 100;
+  var self = this;
+  self.toStop = false;
+  var loop = function () {
+    self.update();
+    if (self.toStop) return;
+    setTimeout(loop, INTERVAL);
+  };
+  loop();
+};
+
+Solver.prototype.update = function () {
+  switch (this.counter % 4) {
+    case 0:
+      this.controller.up();
+      break;
+    case 1:
+      this.controller.down();
+      break;
+    case 2:
+      this.controller.left();
+      break;
+    case 3:
+      this.controller.right();
+      break;
+    default: break;
+  }
+  this.counter++;
+};
+
+var s = new Solver();
+
+
