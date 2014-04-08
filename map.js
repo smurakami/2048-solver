@@ -58,7 +58,7 @@ MapTile.prototype.clone = function() {
   return _tile;
 };
 
-var readMap = function () {
+Map.read = function () {
   // Initialize
   var map = new Map();
   // Get tiles from DOM tree
@@ -97,14 +97,14 @@ var readMap = function () {
   return map;
 };
 
-var printMap = function(map) {
+Map.prototype.print = function() {
   for (var i = 0; i < 4; i++){
     s = ""
     for (var j = 0; j < 4; j++){
-      var tile = map[i][j];
+      var tile = this[i][j];
       if (tile) {
         s += tile.num;
-        if (map[i][j].isNew) s += "new"
+        if (this[i][j].isNew) s += "new"
         else s += "   "
       } else {
         s += "0   "
