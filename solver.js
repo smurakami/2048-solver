@@ -43,7 +43,6 @@ Solver.prototype.update = function () {
       break;
     default: break;
   }
-
   this.counter++;
 };
 

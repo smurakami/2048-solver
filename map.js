@@ -28,6 +28,11 @@ Map.prototype.staticValue = function(){
   return size * size - this.tiles.length;
 };
 
+Map.prototype.maxValue = function(){
+  var size = this.size;
+  return size * size;
+ };
+
 Map.prototype.moveup = function(){ this.move(0, -1); }
 Map.prototype.movedown = function(){ this.move(0, 1); }
 Map.prototype.moveleft = function(){ this.move(-1, 0); }
@@ -89,6 +94,18 @@ Map.prototype.move = function (dir_x, dir_y) {
     }
   }
   return moved;
+};
+
+Map.prototype.putTile = function(x, y) {
+  if (this[y][x] == null) {
+    var tile = new Tile();
+    tile.num = 2;
+    tile.x = x;
+    tile.y = y;
+    tile.merged = false;
+    tile.isNew = false;
+    this[y][x] = tile;
+  }
 };
 
 Map.prototype.inRange = function(x, y){

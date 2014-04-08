@@ -23,6 +23,11 @@ Map.prototype.clone = function () {
   return _map;
 };
 
+Map.prototype.staticValue = function(){
+  var size = this.size;
+  return size * size - this.tiles.length;
+};
+
 Map.prototype.moveup = function(){ this.move(0, -1); }
 Map.prototype.movedown = function(){ this.move(0, 1); }
 Map.prototype.moveleft = function(){ this.move(-1, 0); }
@@ -247,7 +252,22 @@ Controller.prototype.down = function(){
 Controller.prototype.left = function(){
   this.keydown(37);
 };
-/* ============================= *
+var MinMax = function(){
+  this.maxDepth = 4;
+  this.depth = 0;
+};
+
+MinMax.prototype.turnMove = function (map) {
+  if (this.depth == this.maxDepth) {
+    return map.staticValue();
+  }
+  var directions = ["up", "left", "down", "right"];
+
+};
+
+MinMax.prototype.turnPut = function (map) {
+
+};/* ============================= *
  * solver.js
  * ============================= */
 
