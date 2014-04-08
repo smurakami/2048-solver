@@ -25,13 +25,18 @@ Map.prototype.clone = function () {
 
 Map.prototype.staticValue = function(){
   var size = this.size;
-  return size * size - this.tiles.length;
+  return size * size * 2 - this.tiles.length;
 };
 
-Map.prototype.moveup = function(){ this.move(0, -1); }
-Map.prototype.movedown = function(){ this.move(0, 1); }
-Map.prototype.moveleft = function(){ this.move(-1, 0); }
-Map.prototype.moveright = function(){ this.move(1, 0); }
+Map.prototype.maxValue = function(){
+  var size = this.size;
+  return size * size * 2;
+ };
+
+Map.prototype.moveup = function(){ return this.move(0, -1); }
+Map.prototype.movedown = function(){ return this.move(0, 1); }
+Map.prototype.moveleft = function(){ return this.move(-1, 0); }
+Map.prototype.moveright = function(){ return this.move(1, 0); }
 
 Map.prototype.move = function (dir_x, dir_y) {
   if (dir_x != 0) {
@@ -72,6 +77,7 @@ Map.prototype.move = function (dir_x, dir_y) {
       current_x = next_x;
       current_y = next_y;
       toRemove = true;
+      moved = true;
       // i--;
     }
     // move
@@ -89,6 +95,18 @@ Map.prototype.move = function (dir_x, dir_y) {
     }
   }
   return moved;
+};
+
+Map.prototype.putTile = function(x, y) {
+  if (this[y][x] == null) {
+    var tile = new MapTile();
+    tile.num = 2;
+    tile.x = x;
+    tile.y = y;
+    tile.merged = false;
+    tile.isNew = false;
+    this[y][x] = tile;
+  }
 };
 
 Map.prototype.inRange = function(x, y){
@@ -253,7 +271,7 @@ Controller.prototype.left = function(){
   this.keydown(37);
 };
 var MinMax = function(){
-  this.maxDepth = 4;
+  this.maxDepth = 6;
   this.depth = 0;
 };
 
@@ -261,13 +279,84 @@ MinMax.prototype.turnMove = function (map) {
   if (this.depth == this.maxDepth) {
     return map.staticValue();
   }
-  var directions = ["up", "left", "down", "right"];
-
+  this.depth++;
+  var directions = ["left", "down", "right", "up"];
+  var max = 0;
+  for (var i = 0, len = directions.length; i < len; i++){
+    var _map = map.clone();
+    var moved = _map['move'+directions[i]]();
+    if (moved) {
+      var val = this.turnPut(_map);
+    } else {
+      var val = 0;
+    }
+    if (val > max) {
+      max = val;
+    }
+  }
+  this.depth--;
+  return max;
 };
 
 MinMax.prototype.turnPut = function (map) {
+  if (this.depth == this.maxDepth) return map.staticValue();
+  this.depth++;
+  // console.log('1');
+  var size = map.size;
+  // console.log('2');
+  var min = map.maxValue();
+  // console.log('3');
+  for (var i = 0; i < size; i++){
+    for (var j = 0; j < size; j++){
+      // console.log('4');
+      if (map[i][j] == null){
+        // console.log("in the loop");
+        var _map = map.clone();
+        // console.log('hello');
+        _map.putTile(j, i);
+        // console.log('world');
+        var val = this.turnMove(_map);
+        if (val < min) {
+          min = val;
+        }
+      }
+    }
+  // console.log('4');
+  }
+  this.depth--;
+  return min;
+};
 
-};/* ============================= *
+MinMax.prototype.predicate = function(map){
+  var max = 0;
+  var maxindex = 0;
+  var directions = ["left", "down", "right", "up"];
+  var max = 0;
+  var maxindex = 0;
+  this.depth = 0;
+  for (var i = 0, len = directions.length; i < len; i++){
+    // console.log('a');
+    var _map = map.clone();
+    // console.log('a');
+    var moved = _map['move'+directions[i]]();
+    var val = 0;
+    if (moved){
+      val = this.turnMove(_map);
+    } else {
+      val = 0;
+    }
+    // console.log("dir: "+directions[i]+" val: "+val);
+    // console.log('c');
+    if (val > max) {
+      max = val;
+      maxindex = i;
+    }
+    if (i == len - 2 || max != 0) break;
+  }
+  return directions[maxindex];
+};
+
+/* ============================= *
  * solver.js
  * ============================= */
 
@@ -295,25 +384,29 @@ Solver.prototype.stop = function(){
 
 Solver.prototype.update = function () {
   var self = this;
+  var map = Map.read();
+  var minmax = new MinMax();
+  var dir = minmax.predicate(map);
+  // console.log(dir);
+  this.controller[dir]();
 
-  var dir = Math.floor(Math.random() * 4);
-  switch (dir) {
-    case 0:
-      this.controller.up();
-      break;
-    case 1:
-      this.controller.down();
-      break;
-    case 2:
-      this.controller.left();
-      break;
-    case 3:
-      this.controller.right();
-      break;
-    default: break;
-  }
-
-  this.counter++;
+//   var dir = Math.floor(Math.random() * 4);
+//   switch (dir) {
+//     case 0:
+//       this.controller.up();
+//       break;
+//     case 1:
+//       this.controller.down();
+//       break;
+//     case 2:
+//       this.controller.left();
+//       break;
+//     case 3:
+//       this.controller.right();
+//       break;
+//     default: break;
+//   }
+//   this.counter++;
 };
 
 var s = new Solver();

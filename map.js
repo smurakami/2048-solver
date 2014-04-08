@@ -25,18 +25,18 @@ Map.prototype.clone = function () {
 
 Map.prototype.staticValue = function(){
   var size = this.size;
-  return size * size - this.tiles.length;
+  return size * size * 2 - this.tiles.length;
 };
 
 Map.prototype.maxValue = function(){
   var size = this.size;
-  return size * size;
+  return size * size * 2;
  };
 
-Map.prototype.moveup = function(){ this.move(0, -1); }
-Map.prototype.movedown = function(){ this.move(0, 1); }
-Map.prototype.moveleft = function(){ this.move(-1, 0); }
-Map.prototype.moveright = function(){ this.move(1, 0); }
+Map.prototype.moveup = function(){ return this.move(0, -1); }
+Map.prototype.movedown = function(){ return this.move(0, 1); }
+Map.prototype.moveleft = function(){ return this.move(-1, 0); }
+Map.prototype.moveright = function(){ return this.move(1, 0); }
 
 Map.prototype.move = function (dir_x, dir_y) {
   if (dir_x != 0) {
@@ -77,6 +77,7 @@ Map.prototype.move = function (dir_x, dir_y) {
       current_x = next_x;
       current_y = next_y;
       toRemove = true;
+      moved = true;
       // i--;
     }
     // move
@@ -98,7 +99,7 @@ Map.prototype.move = function (dir_x, dir_y) {
 
 Map.prototype.putTile = function(x, y) {
   if (this[y][x] == null) {
-    var tile = new Tile();
+    var tile = new MapTile();
     tile.num = 2;
     tile.x = x;
     tile.y = y;

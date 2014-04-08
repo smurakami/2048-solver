@@ -26,24 +26,29 @@ Solver.prototype.stop = function(){
 
 Solver.prototype.update = function () {
   var self = this;
+  var map = Map.read();
+  var minmax = new MinMax();
+  var dir = minmax.predicate(map);
+  // console.log(dir);
+  this.controller[dir]();
 
-  var dir = Math.floor(Math.random() * 4);
-  switch (dir) {
-    case 0:
-      this.controller.up();
-      break;
-    case 1:
-      this.controller.down();
-      break;
-    case 2:
-      this.controller.left();
-      break;
-    case 3:
-      this.controller.right();
-      break;
-    default: break;
-  }
-  this.counter++;
+//   var dir = Math.floor(Math.random() * 4);
+//   switch (dir) {
+//     case 0:
+//       this.controller.up();
+//       break;
+//     case 1:
+//       this.controller.down();
+//       break;
+//     case 2:
+//       this.controller.left();
+//       break;
+//     case 3:
+//       this.controller.right();
+//       break;
+//     default: break;
+//   }
+//   this.counter++;
 };
 
 var s = new Solver();
