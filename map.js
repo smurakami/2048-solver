@@ -23,6 +23,11 @@ Map.prototype.clone = function () {
   return _map;
 };
 
+Map.prototype.staticValue = function(){
+  var size = this.size;
+  return size * size - this.tiles.length;
+};
+
 Map.prototype.moveup = function(){ this.move(0, -1); }
 Map.prototype.movedown = function(){ this.move(0, 1); }
 Map.prototype.moveleft = function(){ this.move(-1, 0); }

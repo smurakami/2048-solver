@@ -4,6 +4,9 @@ var MinMax = function(){
 };
 
 MinMax.prototype.turnMove = function (map) {
+  if (this.depth == this.maxDepth) {
+    return map.staticValue();
+  }
 
 };
 
