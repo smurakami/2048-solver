@@ -2,13 +2,13 @@
  * map.js
  * ============================= */
 
+var MAP_SIZE = 4;
 var Map = function(){
-  var SIZE = 4;
-  for (var i = 0; i < SIZE; i++) {
+  for (var i = 0; i < MAP_SIZE; i++) {
     this[i] = [null, null, null, null];
   }
   this.tiles = [];
-  this.size = SIZE;
+  this.size = MAP_SIZE;
 };
 
 Map.prototype = new Array();
@@ -29,8 +29,7 @@ Map.prototype.staticValue = function(){
 };
 
 Map.prototype.maxValue = function(){
-  var size = this.size;
-  return size * size * 2;
+  return MAP_SIZE * MAP_SIZE * 2;
  };
 
 Map.prototype.moveup = function(){ return this.move(0, -1); }
@@ -273,6 +272,8 @@ Controller.prototype.left = function(){
 var MinMax = function(){
   this.maxDepth = 6;
   this.depth = 0;
+  this.alpha = Map.prototype.maxValue();
+  this.beta = Map.prototype.minValue();
 };
 
 MinMax.prototype.turnMove = function (map) {
@@ -293,6 +294,9 @@ MinMax.prototype.turnMove = function (map) {
     if (val > max) {
       max = val;
     }
+    if (i == len - 2 && max != 0){
+      break;
+    }
   }
   this.depth--;
   return max;
@@ -301,27 +305,19 @@ MinMax.prototype.turnMove = function (map) {
 MinMax.prototype.turnPut = function (map) {
   if (this.depth == this.maxDepth) return map.staticValue();
   this.depth++;
-  // console.log('1');
   var size = map.size;
-  // console.log('2');
   var min = map.maxValue();
-  // console.log('3');
   for (var i = 0; i < size; i++){
     for (var j = 0; j < size; j++){
-      // console.log('4');
       if (map[i][j] == null){
-        // console.log("in the loop");
         var _map = map.clone();
-        // console.log('hello');
         _map.putTile(j, i);
-        // console.log('world');
         var val = this.turnMove(_map);
         if (val < min) {
           min = val;
         }
       }
     }
-  // console.log('4');
   }
   this.depth--;
   return min;
@@ -335,9 +331,7 @@ MinMax.prototype.predicate = function(map){
   var maxindex = 0;
   this.depth = 0;
   for (var i = 0, len = directions.length; i < len; i++){
-    // console.log('a');
     var _map = map.clone();
-    // console.log('a');
     var moved = _map['move'+directions[i]]();
     var val = 0;
     if (moved){
@@ -345,13 +339,11 @@ MinMax.prototype.predicate = function(map){
     } else {
       val = 0;
     }
-    // console.log("dir: "+directions[i]+" val: "+val);
-    // console.log('c');
     if (val > max) {
       max = val;
       maxindex = i;
     }
-    if (i == len - 2 || max != 0) break;
+    if (i == len - 2 && max != 0) break;
   }
   return directions[maxindex];
 };

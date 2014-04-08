@@ -2,13 +2,13 @@
  * map.js
  * ============================= */
 
+var MAP_SIZE = 4;
 var Map = function(){
-  var SIZE = 4;
-  for (var i = 0; i < SIZE; i++) {
+  for (var i = 0; i < MAP_SIZE; i++) {
     this[i] = [null, null, null, null];
   }
   this.tiles = [];
-  this.size = SIZE;
+  this.size = MAP_SIZE;
 };
 
 Map.prototype = new Array();
@@ -29,9 +29,12 @@ Map.prototype.staticValue = function(){
 };
 
 Map.prototype.maxValue = function(){
-  var size = this.size;
-  return size * size * 2;
+  return MAP_SIZE * MAP_SIZE * 2;
  };
+
+Map.prototype.minValue = function(){
+  return 0;
+};
 
 Map.prototype.moveup = function(){ return this.move(0, -1); }
 Map.prototype.movedown = function(){ return this.move(0, 1); }
