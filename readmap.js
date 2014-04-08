@@ -1,14 +1,13 @@
-var Map = function(){
-  for (var i = 0; i < 4; i++) {
-    this[i] = [0, 0, 0, 0];
-  }
-};
-
-Map.prototype = new Array();
-
-var getTileMap = function () {
+var readMap = function () {
   // Initialize
-  var map = new Map();
+  var MAP_SIZE = 4;
+  var map = new Array(MAP_SIZE);
+  for (var i = 0; i < MAP_SIZE; i++) {
+    map[i] = Array(4);
+    for (var j = 0; j < MAP_SIZE; j++){
+      map[i][j] = 0;
+    }
+  }
   // Get tiles from DOM tree
   var tiles = [];
   var tileContainer = document.querySelector('.tile-container');
@@ -41,8 +40,6 @@ var getTileMap = function () {
     var tile = tiles[i];
     map[tile.y][tile.x] = tile.num;
   }
-
-  printMap(map);
 
   return map;
 };
