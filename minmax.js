@@ -1,5 +1,5 @@
 var MinMax = function(){
-  this.maxDepth = 10;
+  this.maxDepth = 16;
   this.depth = 0;
 };
 
@@ -55,7 +55,7 @@ MinMax.prototype.turnPut = function (map, alpha, beta) {
   var pos = poslist[dice];
 
   var _map = map.clone();
-  _map.putTile(pos.y, pos.x);
+  // _map.putTile(pos.y, pos.x);
   var val = this.turnMove(_map);
   if (val < beta) {
     beta = val;
