@@ -24,6 +24,7 @@ Map.prototype.clone = function () {
 };
 
 var PENALTY = 1;
+var REWARD  = 0.5;
 
 Map.prototype.staticValue = function(){
   var size = this.size;
@@ -32,19 +33,29 @@ Map.prototype.staticValue = function(){
     for (var j = 0; j < size; j++){
       tile = this[i][j];
       if(tile == null) continue;
-      var num = tile.num;
-      var dxs = [-1, 1];
-      var dys = [-1, 1];
+      var dxs = [-1, 0, 1];
+      var dys = [-1, 0, 1];
       for (var _i = 0; _i < 2; _i++){
         for (var _j = 0; _j < 2; _j++){
           var dx = dxs[_i];
           var dy = dxs[_j];
           var x = tile.x + dx;
           var y = tile.y + dy;
-          if (this.inRange(x, y)){
+          if (dx == 0 && dy == 0) continue;
+          if (!this.inRange(x, y)) continue;
+          var _tile = this[y][x];
+          if (_tile == null) continue;
+          if (dx != 0 && dy != 0){
             _tile = this[y][x];
-            if(_tile && _tile.num == num){
+            if(_tile.num == tile.num){
               val -= PENALTY;
+            }
+          } else {
+            if (_tile.num == tile.num/2 || _tile.num/2 == tile.num){
+              val += REWARD;
+            }
+            if (_tile.num == tile.num){
+              val += REWARD;
             }
           }
         }

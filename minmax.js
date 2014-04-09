@@ -24,6 +24,7 @@ MinMax.prototype.turnMove = function (map, alpha, beta) {
       alpha = val;
     }
     if (alpha >= beta) {
+      this.depth--;
       return beta;
     }
     // if (i == len - 2 && anymove){
@@ -61,6 +62,7 @@ MinMax.prototype.turnPut = function (map, alpha, beta) {
   }
 
   if (beta <= alpha){
+    this.depth--;
     return alpha;
   }
   this.depth--;
