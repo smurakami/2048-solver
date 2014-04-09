@@ -1,5 +1,5 @@
 var MinMax = function(){
-  this.maxDepth = 8;
+  this.maxDepth = 10;
   this.depth = 0;
 };
 
@@ -26,9 +26,9 @@ MinMax.prototype.turnMove = function (map, alpha, beta) {
     if (alpha >= beta) {
       return beta;
     }
-    if (i == len - 2 && anymove){
-      break;
-    }
+    // if (i == len - 2 && anymove){
+    //   break;
+    // }
   }
   this.depth--;
   return alpha;
@@ -88,7 +88,7 @@ MinMax.prototype.predicate = function(map){
       max = val;
       maxindex = i;
     }
-    if (i == len - 2 && max != 0) break;
+    // if (i == len - 2 && max != 0) break;
   }
   return directions[maxindex];
 };

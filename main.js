@@ -23,9 +23,35 @@ Map.prototype.clone = function () {
   return _map;
 };
 
+var PENALTY = 1;
+
 Map.prototype.staticValue = function(){
   var size = this.size;
-  return size * size * 2 - this.tiles.length;
+  var val = size * size * 2 - this.tiles.length;
+  for (var i = 0; i < size; i++){
+    for (var j = 0; j < size; j++){
+      tile = this[i][j];
+      if(tile == null) continue;
+      var num = tile.num;
+      var dxs = [-1, 1];
+      var dys = [-1, 1];
+      for (var _i = 0; _i < 2; _i++){
+        for (var _j = 0; _j < 2; _j++){
+          var dx = dxs[_i];
+          var dy = dxs[_j];
+          var x = tile.x + dx;
+          var y = tile.y + dy;
+          if (this.inRange(x, y)){
+            _tile = this[y][x];
+            if(_tile && _tile.num == num){
+              val -= PENALTY;
+            }
+          }
+        }
+      }
+    }
+  }
+  return val;
 };
 
 Map.prototype.maxValue = function(){
@@ -33,7 +59,7 @@ Map.prototype.maxValue = function(){
  };
 
 Map.prototype.minValue = function(){
-  return 0;
+  return -MAP_SIZE * MAP_SIZE * 2;
 };
 
 Map.prototype.moveup = function(){ return this.move(0, -1); }
@@ -274,7 +300,7 @@ Controller.prototype.left = function(){
   this.keydown(37);
 };
 var MinMax = function(){
-  this.maxDepth = 8;
+  this.maxDepth = 10;
   this.depth = 0;
 };
 
@@ -301,9 +327,9 @@ MinMax.prototype.turnMove = function (map, alpha, beta) {
     if (alpha >= beta) {
       return beta;
     }
-    if (i == len - 2 && anymove){
-      break;
-    }
+    // if (i == len - 2 && anymove){
+    //   break;
+    // }
   }
   this.depth--;
   return alpha;
@@ -314,20 +340,29 @@ MinMax.prototype.turnPut = function (map, alpha, beta) {
   this.depth++;
   var size = map.size;
   // var beta = map.maxValue();
+  var poslist = [];
   for (var i = 0; i < size; i++){
     for (var j = 0; j < size; j++){
       if (map[i][j] == null){
-        var _map = map.clone();
-        _map.putTile(j, i);
-        var val = this.turnMove(_map);
-        if (val < beta) {
-          beta = val;
-        }
-        if (beta <= alpha){
-          return alpha;
-        }
+        poslist.push({x: j, y: i});
       }
     }
+  }
+
+  var len = poslist.length;
+  var dice = Math.floor(Math.random() * len);
+
+  var pos = poslist[dice];
+
+  var _map = map.clone();
+  _map.putTile(pos.y, pos.x);
+  var val = this.turnMove(_map);
+  if (val < beta) {
+    beta = val;
+  }
+
+  if (beta <= alpha){
+    return alpha;
   }
   this.depth--;
   return beta;
@@ -354,7 +389,7 @@ MinMax.prototype.predicate = function(map){
       max = val;
       maxindex = i;
     }
-    if (i == len - 2 && max != 0) break;
+    // if (i == len - 2 && max != 0) break;
   }
   return directions[maxindex];
 };
