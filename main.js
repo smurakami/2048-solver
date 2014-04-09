@@ -451,3 +451,4 @@ Solver.prototype.update = function () {
 };
 
 var s = new Solver();
+s.start();
