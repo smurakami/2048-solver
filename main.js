@@ -311,7 +311,7 @@ Controller.prototype.left = function(){
   this.keydown(37);
 };
 var MinMax = function(){
-  this.maxDepth = 16;
+  this.maxDepth = 6;
   this.depth = 0;
 };
 
@@ -351,31 +351,21 @@ MinMax.prototype.turnPut = function (map, alpha, beta) {
   if (this.depth == this.maxDepth) return map.staticValue();
   this.depth++;
   var size = map.size;
-  // var beta = map.maxValue();
-  var poslist = [];
   for (var i = 0; i < size; i++){
     for (var j = 0; j < size; j++){
       if (map[i][j] == null){
-        poslist.push({x: j, y: i});
+        var _map = map.clone();
+        _map.putTile(j, i);
+        var val = this.turnMove(_map);
+        if (val < beta) {
+          beta = val;
+        }
+        if (beta <= alpha){
+          this.depth--;
+          return alpha;
+        }
       }
     }
-  }
-
-  var len = poslist.length;
-  var dice = Math.floor(Math.random() * len);
-
-  var pos = poslist[dice];
-
-  var _map = map.clone();
-  // _map.putTile(pos.y, pos.x);
-  var val = this.turnMove(_map);
-  if (val < beta) {
-    beta = val;
-  }
-
-  if (beta <= alpha){
-    this.depth--;
-    return alpha;
   }
   this.depth--;
   return beta;
